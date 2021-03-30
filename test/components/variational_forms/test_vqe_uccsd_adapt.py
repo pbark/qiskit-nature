@@ -24,6 +24,8 @@ from qiskit_nature.algorithms.ground_state_solvers import AdaptVQE, VQEUCCSDFact
 from qiskit_nature.transformations import FermionicTransformation
 from qiskit_nature.circuit.library import HartreeFock
 from qiskit_nature.components.variational_forms import UCCSD
+from qiskit_nature.mappers.second_quantization import ParityMapper
+from qiskit_nature.operators.second_quantization.qubit_converter import QubitConverter
 from qiskit_nature.drivers import PySCFDriver, UnitsType
 from qiskit_nature import QiskitNatureError
 
@@ -47,13 +49,14 @@ class TestAdaptVQEUCCSD(QiskitNatureTestCase):
 
         molecule = self.driver.run()
         self.num_particles = molecule.num_alpha + molecule.num_beta
-        self.num_spin_orbitals = molecule.num_orbitals * 2
+        self.num_spin_orbitals = molecule.num_molecular_orbitals * 2
         fer_op = FermionicOperator(h1=molecule.one_body_integrals, h2=molecule.two_body_integrals)
         map_type = 'PARITY'
         qubit_op = fer_op.mapping(map_type)
         self.qubit_op = TwoQubitReduction(num_particles=self.num_particles).convert(qubit_op)
         self.num_qubits = self.qubit_op.num_qubits
-        self.init_state = HartreeFock(self.num_spin_orbitals, self.num_particles)
+        converter = QubitConverter(mapper=ParityMapper())
+        self.init_state = HartreeFock(self.num_spin_orbitals, self.num_particles, converter)
         self.var_form_base = None
 
     def test_uccsd_adapt(self):
@@ -82,7 +85,8 @@ class TestAdaptVQEUCCSD(QiskitNatureTestCase):
             def get_solver(self, transformation):
                 num_orbitals = transformation.molecule_info['num_orbitals']
                 num_particles = transformation.molecule_info['num_particles']
-                initial_state = HartreeFock(num_orbitals, num_particles)
+                converter = QubitConverter(mapper=ParityMapper())
+                initial_state = HartreeFock(num_orbitals, num_particles, converter)
                 var_form = UCCSD(num_orbitals,
                                  num_particles,
                                  initial_state=initial_state)

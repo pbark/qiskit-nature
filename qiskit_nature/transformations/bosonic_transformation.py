@@ -26,11 +26,10 @@ from qiskit.utils import algorithm_globals
 from qiskit.algorithms import EigensolverResult, MinimumEigensolverResult
 from qiskit.opflow import PauliSumOp
 from qiskit_nature import QiskitNatureError
-from qiskit_nature import WatsonHamiltonian
 from qiskit_nature.bosonic_operator import BosonicOperator
-from qiskit_nature.components.bosonic_bases import HarmonicBasis
+from qiskit_nature.drivers.bosonic_bases import HarmonicBasis
 from qiskit_nature.components.variational_forms import UVCC
-from qiskit_nature.drivers import BaseDriver
+from qiskit_nature.drivers import BaseDriver, WatsonHamiltonian
 from qiskit_nature.results import EigenstateResult, VibronicStructureResult
 from .transformation import Transformation
 
@@ -246,7 +245,7 @@ class BosonicTransformation(Transformation):
         or a higher order excitation.
 
         Args:
-            index: the indexes defining the excitation
+            index: the indices defining the excitation
             basis: Is a list defining the number of modals per mode. E.g. for a 3 modes system
                 with 4 modals per mode basis = [4,4,4]
             qubit_mapping: the qubits mapping type. Only 'direct' is supported at the moment.

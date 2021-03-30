@@ -67,7 +67,7 @@ class TestReadmeSample(QiskitNatureTestCase):
                              basis='sto3g')
         molecule = driver.run()
         num_particles = molecule.num_alpha + molecule.num_beta
-        num_spin_orbitals = molecule.num_orbitals * 2
+        num_spin_orbitals = molecule.num_molecular_orbitals * 2
 
         # Build the qubit operator, which is the input to the VQE algorithm
         ferm_op = FermionicOperator(h1=molecule.one_body_integrals, h2=molecule.two_body_integrals)
@@ -80,9 +80,15 @@ class TestReadmeSample(QiskitNatureTestCase):
         from qiskit.algorithms.optimizers import L_BFGS_B
         optimizer = L_BFGS_B()
 
+        # setup the mapper and qubit converter
+        from qiskit_nature.mappers.second_quantization import ParityMapper
+        from qiskit_nature.operators.second_quantization.qubit_converter import QubitConverter
+        mapper = ParityMapper()
+        converter = QubitConverter(mapper=mapper)
+
         # setup the initial state for the variational form
         from qiskit_nature.circuit.library import HartreeFock
-        init_state = HartreeFock(num_spin_orbitals, num_particles)
+        init_state = HartreeFock(num_spin_orbitals, num_particles, converter)
 
         # setup the variational form for VQE
         from qiskit.circuit.library import TwoLocal

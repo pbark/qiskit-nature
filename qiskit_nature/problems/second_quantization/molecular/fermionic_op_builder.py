@@ -45,15 +45,15 @@ def build_ferm_op_from_ints(one_body_integrals: np.ndarray,
     the coefficients of the second-quantized Hamiltonian that is built. If integrals are stored
     in the '*chemist*' notation
              h2(i,j,k,l) --> adag_i adag_k a_l a_j
-    they are required to be in block spin format and also have indexes reordered as follows
+    they are required to be in block spin format and also have indices reordered as follows
     'ijkl->ljik'.
     There is another popular notation, the '*physicist*' notation
              h2(i,j,k,l) --> adag_i adag_j a_k a_l
     If you are using the '*physicist*' notation, you need to convert it to
     the '*chemist*' notation. E.g. h2=numpy.einsum('ikmj->ijkm', h2)
-    The :class:`~qiskit_nature.QMolecule` class has
-    :attr:`~qiskit_nature.QMolecule.one_body_integrals` and
-    :attr:`~qiskit_nature.QMolecule.two_body_integrals` properties that can be
+    The :class:`~qiskit_nature.drivers.QMolecule` class has
+    :attr:`~qiskit_nature.drivers.QMolecule.one_body_integrals` and
+    :attr:`~qiskit_nature.drivers.QMolecule.two_body_integrals` properties that can be
     directly supplied to the `h1` and `h2` parameters here respectively.
 
     Args:
